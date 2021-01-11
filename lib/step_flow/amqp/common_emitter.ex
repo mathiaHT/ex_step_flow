@@ -16,8 +16,8 @@ defmodule StepFlow.Amqp.CommonEmitter do
   ```
 
   """
-  def publish(queue, message, options \\ []) do
-    Connection.publish(queue, message, options)
+  def publish(queue, message, options \\ [], exchange \\ "job_submit") do
+    Connection.publish(queue, message, options, exchange)
   end
 
   @doc """
@@ -30,7 +30,7 @@ defmodule StepFlow.Amqp.CommonEmitter do
   ```
 
   """
-  def publish_json(queue, priority, message) do
+  def publish_json(queue, priority, message, exchange \\ "job_submit") do
     message =
       message
       |> check_message_parameters
@@ -41,7 +41,7 @@ defmodule StepFlow.Amqp.CommonEmitter do
     ]
 
     JobInstrumenter.inc(:step_flow_jobs_created, queue)
-    publish(queue, message, options)
+    publish(queue, message, options, exchange)
   end
 
   defp check_message_parameters(message) do
