@@ -88,6 +88,12 @@ defmodule StepFlow.Migration.All do
 
     Ecto.Migrator.up(
       StepFlow.Repo,
+      20_210_112_145_300,
+      StepFlow.Migration.CreateLiveWorkerTable
+    )
+
+    Ecto.Migrator.up(
+      StepFlow.Repo,
       20_210_303_120_000,
       StepFlow.Migration.CreateWorkflowStatus
     )
