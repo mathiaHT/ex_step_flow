@@ -52,27 +52,6 @@ defmodule StepFlow.Workflows do
       end
 
     query =
-      case Map.get(params, "mode") do
-        nil ->
-          from(workflow in query)
-
-        ["live", "file"] ->
-          from(workflow in query)
-
-        ["live"] ->
-          from(
-            workflow in query,
-            where: workflow.is_live == true
-          )
-
-        ["file"] ->
-          from(
-            workflow in query,
-            where: workflow.is_live == false
-          )
-      end
-
-    query =
       from(workflow in subquery(query))
       |> filter_query(params, :video_id)
       |> filter_query(params, :identifier)
@@ -80,6 +59,8 @@ defmodule StepFlow.Workflows do
       |> filter_query(params, :version_minor)
       |> filter_query(params, :version_micro)
       |> filter_query(params, :is_live)
+      |> filter_status(params)
+      |> filter_mode(params)
       |> date_before_filter_query(params, :before_date)
       |> date_after_filter_query(params, :after_date)
       |> filter_status(params, :states)
@@ -132,6 +113,48 @@ defmodule StepFlow.Workflows do
     }
   end
 
+  defp get_status(status, completed_status) do
+    if status != nil do
+      if Status.state_enum_label(:completed) in status do
+        if status == completed_status do
+          :completed
+        else
+          nil
+        end
+      else
+        if Status.state_enum_label(:error) in status do
+          :error
+        else
+          :processing
+        end
+      end
+    else
+      nil
+    end
+  end
+
+  defp filter_mode(query, params) do
+    case Map.get(params, "mode") do
+      nil ->
+        from(workflow in query)
+
+      ["live", "file"] ->
+        from(workflow in query)
+
+      ["live"] ->
+        from(
+          workflow in query,
+          where: workflow.is_live == true
+        )
+
+      ["file"] ->
+        from(
+          workflow in query,
+          where: workflow.is_live == false
+        )
+    end
+  end
+
   def filter_status(query, params, key) do
     case StepFlow.Map.get_by_key_or_atom(params, key) do
       nil ->
@@ -153,6 +176,7 @@ defmodule StepFlow.Workflows do
         )
     end
   end
+
 
   defp filter_query(query, params, key) do
     case StepFlow.Map.get_by_key_or_atom(params, key) do
