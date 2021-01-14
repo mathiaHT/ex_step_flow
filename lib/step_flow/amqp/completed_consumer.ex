@@ -8,6 +8,7 @@ defmodule StepFlow.Amqp.CompletedConsumer do
   alias StepFlow.Jobs
   alias StepFlow.Jobs.Status
   alias StepFlow.Metrics.JobInstrumenter
+  alias StepFlow.LiveWorkers
   alias StepFlow.Step.Live
   alias StepFlow.Workflows
   alias StepFlow.Workflows.StepManager
