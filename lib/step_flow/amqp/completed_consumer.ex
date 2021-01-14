@@ -4,14 +4,16 @@ defmodule StepFlow.Amqp.CompletedConsumer do
   """
 
   require Logger
-  alias StepFlow.Amqp.CompletedConsumer
-  alias StepFlow.Jobs
-  alias StepFlow.Jobs.Status
-  alias StepFlow.Metrics.JobInstrumenter
-  alias StepFlow.LiveWorkers
-  alias StepFlow.Step.Live
-  alias StepFlow.Workflows
-  alias StepFlow.Workflows.StepManager
+  alias StepFlow.{
+    Amqp.CompletedConsumer,
+    Jobs,
+    Jobs.Status,
+    LiveWorkers,
+    Metrics.JobInstrumenter
+    Step.Live,
+    Workflows,
+    Workflows.StepManager
+  }
 
   use StepFlow.Amqp.CommonConsumer, %{
     queue: "job_completed",

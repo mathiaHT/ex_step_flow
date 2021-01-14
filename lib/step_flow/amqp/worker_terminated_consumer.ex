@@ -22,8 +22,8 @@ defmodule StepFlow.Amqp.WorkerTerminatedConsumer do
         tag,
         _redelivered,
         %{
-          "job_id" => job_id
-        } = payload
+          "job_id" => _job_id
+        } = _payload
       ) do
     Workflows.notification_from_job(job_id)
     Basic.ack(channel, tag)

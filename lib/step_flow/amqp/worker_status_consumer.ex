@@ -21,8 +21,8 @@ defmodule StepFlow.Amqp.WorkerStatusConsumer do
         tag,
         _redelivered,
         %{
-          "job_id" => job_id
-        } = payload
+          "job_id" => _job_id
+        } = _payload
       ) do
     Basic.ack(channel, tag)
   end
