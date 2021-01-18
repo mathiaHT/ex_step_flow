@@ -9,6 +9,7 @@ defmodule StepFlow.Amqp.WorkerStatusConsumer do
 
   use StepFlow.Amqp.CommonConsumer, %{
     queue: "worker_status",
+    exchange: "worker_response",
     prefetch_count: 1,
     consumer: &WorkerStatusConsumer.consume/4
   }
