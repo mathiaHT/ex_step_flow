@@ -56,9 +56,9 @@ defmodule StepFlow.Step.Live do
 
     if job.status != [] do
       case Status.get_last_status(job.status).state do
-        :ready_to_init -> update_live_worker(steps, job)
-        :ready_to_start -> update_live_worker(steps, job)
-        :update -> update_live_worker(steps, job)
+        :ready_to_init -> update_live_worker(steps, job, "initializing")
+        :ready_to_start -> update_live_worker(steps, job, "starting")
+        :update -> update_live_worker(steps, job, "updating")
         :stopped -> delete_live_worker(steps, job)
         _ -> {:ok, "nothing to do"}
       end
@@ -73,9 +73,10 @@ defmodule StepFlow.Step.Live do
     |> publish_message(job.step_id)
   end
 
-  defp update_live_worker(steps, job) do
+  defp update_live_worker(steps, job, status) do
     case generate_message(steps, job) do
       {:ok, message} ->
+        {:ok, _} = Status.set_job_status(job.id, status)
         publish_message(message, job.step_id)
 
       _ ->
@@ -106,6 +107,8 @@ defmodule StepFlow.Step.Live do
   def generate_message(steps, job) do
     message = Jobs.get_message(job)
 
+    IO.inspect(message)
+
     requirements = get_requirements(steps, job.step_id)
 
     {result, message} =
@@ -133,12 +136,12 @@ defmodule StepFlow.Step.Live do
     job = Repo.preload(Jobs.get_job(job_id), [:status, :updates, :workflow])
     workflow = Repo.preload(job.workflow, [:jobs])
 
-    job =
-      Jobs.list_jobs(%{workflow_id: workflow.id, step_id: requirements |> List.first()})
+    job_req =
+      Jobs.list_jobs(%{workflow_id: workflow.id, step_id: requirements |> Enum.sort() |> List.first()})
       |> Map.get(:data)
       |> List.first()
 
-    live_worker = LiveWorkers.get_by(%{"job_id" => job.id})
+    live_worker = LiveWorkers.get_by(%{"job_id" => job_req.id})
     ips = live_worker.ips
     port = live_worker.ports |> List.last()
     created = live_worker.creation_date
@@ -190,7 +193,7 @@ defmodule StepFlow.Step.Live do
            step_id,
            message,
            "direct_messaging",
-           headers: [instance_id: get_instance_id(message)]
+           headers: [{"instance_id", :longstr, get_instance_id(message)}]
          ) do
       :ok ->
         {:ok, "started"}
