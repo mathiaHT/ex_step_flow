@@ -136,8 +136,8 @@ defmodule StepFlow.Step.Live do
 
     job_req =
       Jobs.list_jobs(%{
-        workflow_id: workflow.id,
-        step_id: requirements |> Enum.sort() |> List.first()
+        "workflow_id" => workflow.id,
+        "step_id" => requirements |> List.first()
       })
       |> Map.get(:data)
       |> List.first()
