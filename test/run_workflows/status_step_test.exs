@@ -10,6 +10,13 @@ defmodule StepFlow.RunWorkflows.StatusStepTest do
   setup do
     # Explicitly get a connection before each test
     Sandbox.checkout(StepFlow.Repo)
+    # Setting the shared mode
+    Sandbox.mode(StepFlow.Repo, {:shared, self()})
+    {conn, _channel} = StepFlow.HelpersTest.get_amqp_connection()
+
+    on_exit(fn ->
+      StepFlow.HelpersTest.close_amqp_connection(conn)
+    end)
   end
 
   describe "workflows" do
@@ -64,10 +71,13 @@ defmodule StepFlow.RunWorkflows.StatusStepTest do
       StepFlow.HelpersTest.check(workflow.id, 0, 1)
       StepFlow.HelpersTest.complete_jobs(workflow.id, 0)
 
+      StepFlow.HelpersTest.check_jobs_status(workflow, 0, [:completed])
       assert StepFlow.HelpersTest.get_job_count_status(workflow, 0).queued == 0
       assert StepFlow.HelpersTest.get_job_count_status(workflow, 0).processing == 0
       assert StepFlow.HelpersTest.get_job_count_status(workflow, 0).errors == 0
       assert StepFlow.HelpersTest.get_job_count_status(workflow, 0).completed == 1
+
+      StepFlow.HelpersTest.check_jobs_status(workflow, 0, [:completed])
 
       {:ok, "started"} = Step.start_next(workflow)
 

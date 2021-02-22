@@ -6,6 +6,7 @@ defmodule StepFlow.Jobs.Status do
   alias StepFlow.Jobs.Job
   alias StepFlow.Jobs.Status
   alias StepFlow.Repo
+  require Logger
 
   @moduledoc false
 
@@ -58,4 +59,53 @@ defmodule StepFlow.Jobs.Status do
 
   def get_last_status(%Status{} = status), do: status
   def get_last_status(_status), do: nil
+
+  @doc """
+  Returns the relevant status of a list of status.
+  """
+  def get_status(job) do
+    count_completed =
+      job.status
+      |> Enum.filter(fn s -> s.state == :completed end)
+      |> length
+
+    # A job with at least one status.state at :completed is considered :completed
+    if count_completed >= 1 do
+      :completed
+    else
+      last_progression =
+        job.progressions
+        |> Progression.get_last_progression()
+
+      last_status =
+        job.status
+        |> get_last_status()
+
+      Logger.warn(last_status)
+
+      case {last_status, last_progression} do
+        {last_status, _} when last_status.state == :error ->
+          :error
+
+        {last_status, _} when last_status.state == :skipped ->
+          :skipped
+
+        {nil, nil} ->
+          :queued
+
+        {last_status, []} when last_status.state == :retrying ->
+          :queued
+
+        {nil, _} ->
+          :processing
+
+        {last_status, last_progression}
+        when last_progression.updated_at > last_status.updated_at ->
+          :processing
+
+        {_, _} ->
+          nil
+      end
+    end
+  end
 end

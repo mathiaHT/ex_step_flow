@@ -302,4 +302,22 @@ defmodule StepFlow.HelpersTest do
 
     step.jobs
   end
+
+  def check_jobs_status(workflow, step_id, expected) do
+    jobs =
+      Repo.preload(workflow, jobs: [:status, :progressions])
+      |> Map.get(:jobs)
+
+    step =
+      StepFlow.Map.get_by_key_or_atom(workflow, :steps)
+      |> Workflows.get_step_status(jobs)
+      |> Enum.filter(fn step -> step["id"] == step_id end)
+
+    IO.inspect(step.jobs)
+
+    # Enum.map(step.jobs, fn(j) ->
+    #     Status.get_status(j)
+    #   end)
+    # |> Kernel.==(expected)
+  end
 end

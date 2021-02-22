@@ -13,6 +13,8 @@ defmodule StepFlow.Application do
   def start(_type, _args) do
     import Supervisor.Spec
 
+    Logger.configure(level: String.to_atom(System.get_env("STEPFLOW_LOG_LEVEL", "debug")))
+
     options = %{
       keepalive: 10_000,
       name: :step_flow_slack_bot,
