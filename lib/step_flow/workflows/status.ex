@@ -212,7 +212,7 @@ defmodule StepFlow.Workflows.Status do
         where:
           fragment("?::timestamp", workflows_status.inserted_at) >= ^start_date and
             fragment("?::timestamp", workflows_status.inserted_at) <= ^end_date and
-            workflows_status.state in [:completed, :error, :processing]
+            workflows_status.state in [:completed, :error, :processing, :pending]
       )
 
     Repo.all(query)
