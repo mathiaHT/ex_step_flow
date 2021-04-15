@@ -220,5 +220,30 @@ defmodule StepFlow.Workflows.StatusTest do
 
       assert status.state == :completed
     end
+
+    test "list_workflows_status" do
+      workflow = workflow_fixture()
+      start_date = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+      {:ok, pending_status} = Status.set_workflow_status(workflow.id, :pending)
+
+      end_date = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+      assert Status.list_workflows_status(start_date, end_date, ["id"], [
+               "user_view"
+             ]) == [pending_status]
+
+      assert Status.list_workflows_status(start_date, end_date, ["invalid_id"], [
+               "user_view"
+             ]) == []
+
+      {:ok, completed_status} = Status.set_workflow_status(workflow.id, :pending)
+
+      end_date = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+      assert Status.list_workflows_status(start_date, end_date, ["id"], [
+               "user_view"
+             ]) == [completed_status, pending_status]
+    end
   end
 end
