@@ -492,12 +492,14 @@ defmodule StepFlow.Api.WorkflowsTest do
                      "end_date" => end_processing,
                      "error" => 0,
                      "processing" => 1,
-                     "start_date" => start_processing
+                     "start_date" => start_processing,
+                     "pending" => 0
                    }
                  ],
                  "error" => 0,
                  "processing" => 1,
-                 "completed" => 0
+                 "completed" => 0,
+                 "pending" => 0
                }
              }
 
@@ -528,7 +530,8 @@ defmodule StepFlow.Api.WorkflowsTest do
                      "end_date" => end_completed,
                      "error" => 0,
                      "processing" => 0,
-                     "start_date" => start_completed
+                     "start_date" => start_completed,
+                     "pending" => 0
                    },
                    %{
                      "bin" => 1,
@@ -536,12 +539,14 @@ defmodule StepFlow.Api.WorkflowsTest do
                      "end_date" => end_processing,
                      "error" => 0,
                      "processing" => 1,
-                     "start_date" => start_processing
+                     "start_date" => start_processing,
+                     "pending" => 0
                    }
                  ],
                  "error" => 0,
                  "processing" => 1,
-                 "completed" => 1
+                 "completed" => 1,
+                 "pending" => 0
                }
              }
     end
@@ -585,7 +590,8 @@ defmodule StepFlow.Api.WorkflowsTest do
                  "bins" => [],
                  "error" => 0,
                  "processing" => 0,
-                 "completed" => 0
+                 "completed" => 0,
+                 "pending" => 0
                }
              }
     end
@@ -610,6 +616,7 @@ defmodule StepFlow.Api.WorkflowsTest do
                  "processing" => 0,
                  "error" => 0,
                  "completed" => 0,
+                 "pending" => 0,
                  "bins" => []
                }
              }

@@ -78,6 +78,7 @@ defmodule StepFlow.WorkflowView do
         processing: 0,
         error: 0,
         completed: 0,
+        pending: 0,
         bins: []
       }
     }
@@ -101,6 +102,10 @@ defmodule StepFlow.WorkflowView do
         completed:
           workflows_status
           |> Enum.filter(fn s -> s.state == :completed end)
+          |> length(),
+        pending:
+          workflows_status
+          |> Enum.filter(fn s -> s.state == :pending end)
           |> length(),
         bins:
           workflows_status
@@ -128,6 +133,10 @@ defmodule StepFlow.WorkflowView do
               completed:
                 group
                 |> Enum.filter(fn s -> s.state == :completed end)
+                |> length(),
+              pending:
+                group
+                |> Enum.filter(fn s -> s.state == :pending end)
                 |> length()
             }
           end)
