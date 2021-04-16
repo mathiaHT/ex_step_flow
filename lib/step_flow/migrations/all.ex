@@ -70,32 +70,32 @@ defmodule StepFlow.Migration.All do
 
     Ecto.Migrator.up(
       StepFlow.Repo,
-      20_201_214_223_900,
+      20_210_303_120_000,
+      StepFlow.Migration.CreateWorkflowStatus
+    )
+
+    Ecto.Migrator.up(
+      StepFlow.Repo,
+      20_210_416_100_000,
       StepFlow.Migration.AddLiveParameter
     )
 
     Ecto.Migrator.up(
       StepFlow.Repo,
-      20_201_214_223_900,
+      20_210_416_110_000,
       StepFlow.Migration.AddUpdatableParameter
     )
 
     Ecto.Migrator.up(
       StepFlow.Repo,
-      20_201_215_142_100,
+      20_210_416_120_000,
       StepFlow.Migration.CreateUpdates
     )
 
     Ecto.Migrator.up(
       StepFlow.Repo,
-      20_210_112_145_300,
+      20_210_416_130_000,
       StepFlow.Migration.CreateLiveWorkerTable
-    )
-
-    Ecto.Migrator.up(
-      StepFlow.Repo,
-      20_210_303_120_000,
-      StepFlow.Migration.CreateWorkflowStatus
     )
   end
 end
