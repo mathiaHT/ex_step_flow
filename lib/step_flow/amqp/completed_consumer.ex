@@ -10,8 +10,7 @@ defmodule StepFlow.Amqp.CompletedConsumer do
     Jobs,
     Jobs.Status,
     LiveWorkers,
-    Metrics.JobInstrumenter
-    Step.Live,
+    Metrics.JobInstrumenter,
     Workflows,
     Workflows.StepManager
   }
@@ -45,15 +44,6 @@ defmodule StepFlow.Amqp.CompletedConsumer do
           |> Map.get(:workflow_id)
           |> Workflows.get_workflow!()
 
-        set_generated_destination_paths(payload, job)
-        set_output_parameters(payload, workflow)
-
-        JobInstrumenter.inc(:step_flow_jobs_completed, job.name)
-        {:ok, job_status} = Jobs.Status.set_job_status(job_id, status)
-        Workflows.Status.define_workflow_status(job.workflow_id, :job_completed, job_status)
-        Workflows.notification_from_job(job_id)
-        StepManager.check_step_status(%{job_id: job_id})
-
         if job.is_live do
           case live_worker_update(job_id, payload) do
             :ok ->
@@ -71,9 +61,13 @@ defmodule StepFlow.Amqp.CompletedConsumer do
 
           set_generated_destination_paths(payload, job)
           set_output_parameters(payload, workflow)
-          Status.set_job_status(job_id, status)
+
+          JobInstrumenter.inc(:step_flow_jobs_completed, job.name)
+          {:ok, job_status} = Status.set_job_status(job_id, status)
+          Workflows.Status.define_workflow_status(job.workflow_id, :job_completed, job_status)
           Workflows.notification_from_job(job_id)
           StepManager.check_step_status(%{job_id: job_id})
+
           Basic.ack(channel, tag)
         end
     end

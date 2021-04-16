@@ -26,7 +26,7 @@ defmodule StepFlow.Jobs.Job do
   @doc false
   def changeset(%Job{} = job, attrs) do
     job
-    |> cast(attrs, [:name, :step_id, :parameters, :is_live, :workflow_id])
+    |> cast(attrs, [:name, :step_id, :parameters, :is_live, :is_updatable, :workflow_id])
     |> foreign_key_constraint(:workflow_id)
     |> validate_required([:name, :step_id, :parameters, :workflow_id])
   end

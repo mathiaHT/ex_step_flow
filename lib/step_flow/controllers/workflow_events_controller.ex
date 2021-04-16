@@ -7,6 +7,7 @@ defmodule StepFlow.WorkflowEventsController do
   alias StepFlow.{
     Amqp.CommonEmitter,
     Jobs,
+    Jobs.Status,
     Notifications.Notification,
     Repo,
     Step.Helpers,
@@ -28,14 +29,8 @@ defmodule StepFlow.WorkflowEventsController do
       %{"event" => "update", "job_id" => job_id, "parameters" => parameters} ->
         update(conn, workflow, user, job_id, parameters)
 
-          last_status = Jobs.Status.get_last_status(job.status)
-
-          internal_handle(conn, workflow, job, job.name, last_status.state)
-        else
-          conn
-          |> put_status(:forbidden)
-          |> json(%{status: "error", message: "Forbidden to retry this workflow"})
-        end
+      %{"event" => "retry", "job_id" => job_id} ->
+        retry(conn, workflow, user, job_id)
 
       %{"event" => "stop"} ->
         stop(conn, workflow, user)

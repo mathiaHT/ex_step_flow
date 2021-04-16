@@ -42,8 +42,6 @@ defmodule StepFlow.Step.Live do
     job = Repo.preload(Jobs.get_job(job_id), [:status, :updates, :workflow])
     workflow_jobs = Repo.preload(job.workflow, [:jobs]).jobs
 
-    step_id = job.step_id
-
     steps = job.workflow.steps
 
     start_next_job_live(workflow_jobs, steps)

@@ -9,8 +9,6 @@ defmodule StepFlow.Amqp.StoppedConsumer do
     Amqp.StoppedConsumer,
     Jobs,
     Jobs.Status,
-    LiveWorkers,
-    Step.Live,
     Workflows,
     Workflows.StepManager
   }
@@ -32,18 +30,13 @@ defmodule StepFlow.Amqp.StoppedConsumer do
         %{
           "job_id" => job_id,
           "status" => status
-        } = payload
+        } = _payload
       ) do
     case Jobs.get_job(job_id) do
       nil ->
         Basic.reject(channel, tag, requeue: false)
 
       job ->
-        workflow =
-          job
-          |> Map.get(:workflow_id)
-          |> Workflows.get_workflow!()
-
         Status.set_job_status(job_id, status)
         Workflows.notification_from_job(job_id)
         StepManager.check_step_status(%{job_id: job_id})
