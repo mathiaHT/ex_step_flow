@@ -8,4 +8,15 @@ config :step_flow, StepFlow,
   exposed_domain_name: {:system, "EXPOSED_DOMAIN_NAME"},
   slack_api_token: {:system, "SLACK_API_TOKEN"}
 
+config :phoenix_swagger,
+  json_library: Jason
+
+config :step_flow, :phoenix_swagger,
+  swagger_files: %{
+    "priv/static/swagger.json" => [
+      router: StepFlow.Router
+      # endpoint: StepFlow.Endpoint
+    ]
+  }
+
 import_config "#{Mix.env()}.exs"
