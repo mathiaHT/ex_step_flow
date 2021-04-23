@@ -21,6 +21,7 @@ defmodule StepFlow.Application do
     children = [
       supervisor(StepFlow.Repo, []),
       supervisor(StepFlow.Amqp.Supervisor, []),
+      supervisor(StepFlow.Workers.Supervisor, []),
       worker(StepFlow.Workflows.StepManager, [])
     ]
 

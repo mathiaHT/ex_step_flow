@@ -5,6 +5,7 @@ defmodule StepFlow.Amqp.WorkerStatusConsumer do
 
   require Logger
   alias StepFlow.Amqp.WorkerStatusConsumer
+  alias StepFlow.Workers.WorkerStatusWatcher
 
   use StepFlow.Amqp.CommonConsumer, %{
     queue: "worker_status",
@@ -21,9 +22,12 @@ defmodule StepFlow.Amqp.WorkerStatusConsumer do
         tag,
         _redelivered,
         %{
-          "job_id" => _job_id
-        } = _payload
+          "worker" => %{"system_info" => %{"docker_container_id" => docker_container_id}}
+        } = payload
       ) do
+    Logger.debug("Got #{docker_container_id} worker status: #{inspect(payload)}")
+    WorkerStatusWatcher.add_worker(docker_container_id, payload)
+
     Basic.ack(channel, tag)
   end
 
