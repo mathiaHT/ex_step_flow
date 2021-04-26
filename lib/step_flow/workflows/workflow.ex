@@ -5,6 +5,7 @@ defmodule StepFlow.Workflows.Workflow do
   alias StepFlow.Artifacts.Artifact
   alias StepFlow.Jobs.Job
   alias StepFlow.Rights.Right
+  alias StepFlow.Workflows.Status
   alias StepFlow.Workflows.Workflow
 
   @moduledoc false
@@ -22,6 +23,7 @@ defmodule StepFlow.Workflows.Workflow do
     field(:parameters, {:array, :map}, default: [])
     has_many(:jobs, Job, on_delete: :delete_all)
     has_many(:artifacts, Artifact, on_delete: :delete_all)
+    has_many(:status, Status, on_delete: :delete_all)
 
     many_to_many(:rights, Right,
       join_through: "step_flow_workflow_right",
