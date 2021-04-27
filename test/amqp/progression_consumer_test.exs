@@ -14,7 +14,7 @@ defmodule StepFlow.Amqp.ProgressionConsumerTest do
     :ok = Sandbox.checkout(StepFlow.Repo)
     # Setting the shared mode
     Sandbox.mode(StepFlow.Repo, {:shared, self()})
-    {conn, channel} = StepFlow.HelpersTest.get_amqp_connection()
+    {conn, _channel} = StepFlow.HelpersTest.get_amqp_connection()
 
     on_exit(fn ->
       StepFlow.HelpersTest.close_amqp_connection(conn)

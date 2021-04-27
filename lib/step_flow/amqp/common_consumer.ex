@@ -149,30 +149,27 @@ defmodule StepFlow.Amqp.CommonConsumer do
     AMQP.Queue.declare(channel, "job_response_not_found", durable: true)
     AMQP.Queue.declare(channel, queue <> "_timeout", durable: true)
 
-    exchange =
-      AMQP.Exchange.topic(channel, "job_response",
-        durable: true,
-        arguments: [{"alternate-exchange", :longstr, "job_response_not_found"}]
-      )
+    AMQP.Exchange.topic(channel, "job_response",
+      durable: true,
+      arguments: [{"alternate-exchange", :longstr, "job_response_not_found"}]
+    )
 
-    exchange =
-      AMQP.Exchange.topic(channel, "worker_response",
-        durable: true,
-        arguments: [{"alternate-exchange", :longstr, "worker_response_not_found"}]
-      )
+    AMQP.Exchange.topic(channel, "worker_response",
+      durable: true,
+      arguments: [{"alternate-exchange", :longstr, "worker_response_not_found"}]
+    )
 
     AMQP.Queue.declare(channel, "direct_messaging_not_found", durable: true)
     AMQP.Queue.declare(channel, queue <> "_timeout", durable: true)
 
-    exchange =
-      AMQP.Exchange.declare(channel, "direct_messaging", :headers,
-        durable: true,
-        arguments: [{"alternate-exchange", :longstr, "direct_messaging_not_found"}]
-      )
+    AMQP.Exchange.declare(channel, "direct_messaging", :headers,
+      durable: true,
+      arguments: [{"alternate-exchange", :longstr, "direct_messaging_not_found"}]
+    )
 
-    exchange = AMQP.Exchange.fanout(channel, "job_response_delayed", durable: true)
+    AMQP.Exchange.fanout(channel, "job_response_delayed", durable: true)
 
-    {:ok, job_response_delayed_queue} =
+    {:ok, _job_response_delayed_queue} =
       AMQP.Queue.declare(channel, "job_response_delayed",
         arguments: [
           {"x-message-ttl", :short, 5000},

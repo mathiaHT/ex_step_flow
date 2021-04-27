@@ -3,6 +3,7 @@ defmodule StepFlow.Jobs.Job do
   import Ecto.Changeset
   alias StepFlow.Jobs.Job
   alias StepFlow.Jobs.Status
+  alias StepFlow.LiveWorkers.LiveWorker
   alias StepFlow.Progressions.Progression
   alias StepFlow.Updates.Update
   alias StepFlow.Workflows.Workflow
@@ -19,6 +20,7 @@ defmodule StepFlow.Jobs.Job do
     has_many(:status, Status, on_delete: :delete_all)
     has_many(:progressions, Progression, on_delete: :delete_all)
     has_many(:updates, Update, on_delete: :delete_all)
+    has_one(:live_worker, LiveWorker, on_delete: :delete_all)
 
     timestamps()
   end
@@ -26,7 +28,7 @@ defmodule StepFlow.Jobs.Job do
   @doc false
   def changeset(%Job{} = job, attrs) do
     job
-    |> cast(attrs, [:name, :step_id, :parameters, :is_live, :workflow_id])
+    |> cast(attrs, [:name, :step_id, :parameters, :is_live, :is_updatable, :workflow_id])
     |> foreign_key_constraint(:workflow_id)
     |> validate_required([:name, :step_id, :parameters, :workflow_id])
   end

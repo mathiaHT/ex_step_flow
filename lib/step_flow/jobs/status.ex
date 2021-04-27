@@ -7,6 +7,7 @@ defmodule StepFlow.Jobs.Status do
   alias StepFlow.Jobs.Job
   alias StepFlow.Jobs.Status
   alias StepFlow.Repo
+  alias StepFlow.Workflows
 
   @moduledoc false
 
@@ -69,6 +70,7 @@ defmodule StepFlow.Jobs.Status do
     field(:state, StepFlow.Jobs.Status.StateEnum)
     field(:description, :map, default: %{})
     belongs_to(:job, Job, foreign_key: :job_id)
+    has_many(:workflow_status, Workflows.Status, on_delete: :delete_all)
 
     timestamps()
   end

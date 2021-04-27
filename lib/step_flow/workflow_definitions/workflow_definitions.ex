@@ -147,6 +147,7 @@ defmodule StepFlow.WorkflowDefinitions do
           select: %{
             id: workflow_definition.id,
             identifier: workflow_definition.identifier,
+            is_live: workflow_definition.is_live,
             label: workflow_definition.label,
             version_major: workflow_definition.version_major,
             version_minor: workflow_definition.version_minor,

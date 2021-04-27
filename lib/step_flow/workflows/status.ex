@@ -29,7 +29,7 @@ defmodule StepFlow.Workflows.Status do
 
   schema "step_flow_workflow_status" do
     field(:state, StepFlow.Workflows.Status.StateEnum)
-    belongs_to(:status, Jobs.Status, foreign_key: :job_status_id, defaults: nil)
+    belongs_to(:status, Jobs.Status, foreign_key: :status_id, defaults: nil)
     belongs_to(:workflow, Workflow, foreign_key: :workflow_id)
 
     timestamps()
@@ -38,7 +38,7 @@ defmodule StepFlow.Workflows.Status do
   @doc false
   def changeset(%Workflows.Status{} = status, attrs) do
     status
-    |> cast(attrs, [:workflow_id, :state, :job_status_id])
+    |> cast(attrs, [:workflow_id, :state, :status_id])
     |> foreign_key_constraint(:workflow_id)
     |> validate_required([:state, :workflow_id])
   end
@@ -81,7 +81,7 @@ defmodule StepFlow.Workflows.Status do
   end
 
   def define_workflow_status(workflow_id, :job_completed, %Jobs.Status{
-        id: job_status_id,
+        id: status_id,
         job_id: job_id
       }) do
     jobs_status_not_completed =
@@ -90,15 +90,15 @@ defmodule StepFlow.Workflows.Status do
       |> length()
 
     if jobs_status_not_completed == 0 do
-      set_workflow_status(workflow_id, :pending, job_status_id)
+      set_workflow_status(workflow_id, :pending, status_id)
     else
       last_status = get_last_workflow_status(workflow_id)
-      set_workflow_status(workflow_id, last_status.state, job_status_id)
+      set_workflow_status(workflow_id, last_status.state, status_id)
     end
   end
 
   def define_workflow_status(workflow_id, :job_retrying, %Jobs.Status{
-        id: job_status_id,
+        id: status_id,
         job_id: job_id
       }) do
     jobs_status_in_error =
@@ -107,9 +107,9 @@ defmodule StepFlow.Workflows.Status do
       |> length()
 
     if jobs_status_in_error == 0 do
-      set_workflow_status(workflow_id, :processing, job_status_id)
+      set_workflow_status(workflow_id, :processing, status_id)
     else
-      set_workflow_status(workflow_id, :error, job_status_id)
+      set_workflow_status(workflow_id, :error, status_id)
     end
   end
 
@@ -123,19 +123,19 @@ defmodule StepFlow.Workflows.Status do
     set_workflow_status(workflow_id, :completed)
   end
 
-  def define_workflow_status(workflow_id, event, %Jobs.Status{id: job_status_id})
+  def define_workflow_status(workflow_id, event, %Jobs.Status{id: status_id})
       when event in [:job_error, :queue_not_found] do
-    set_workflow_status(workflow_id, :error, job_status_id)
+    set_workflow_status(workflow_id, :error, status_id)
   end
 
   def define_workflow_status(_workflow_id, _event, _payload), do: nil
 
-  def set_workflow_status(workflow_id, status, job_status_id \\ nil) do
+  def set_workflow_status(workflow_id, status, status_id \\ nil) do
     %Workflows.Status{}
     |> Workflows.Status.changeset(%{
       workflow_id: workflow_id,
       state: status,
-      job_status_id: job_status_id
+      status_id: status_id
     })
     |> Repo.insert()
   end
@@ -154,7 +154,7 @@ defmodule StepFlow.Workflows.Status do
               where: workflow_status.workflow_id == ^workflow_id
             )
           ),
-        on: workflow_status.job_status_id == job_status.id,
+        on: workflow_status.status_id == job_status.id,
         order_by: [
           desc: field(workflow_status, :inserted_at),
           desc: field(job_status, :id),

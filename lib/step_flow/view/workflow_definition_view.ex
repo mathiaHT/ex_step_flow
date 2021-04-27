@@ -48,6 +48,7 @@ defmodule StepFlow.WorkflowDefinitionView do
     %{
       id: workflow_definition.id,
       identifier: workflow_definition.identifier,
+      is_live: workflow_definition.is_live,
       label: workflow_definition.label,
       version_major: workflow_definition.version_major,
       version_minor: workflow_definition.version_minor,
@@ -60,6 +61,7 @@ defmodule StepFlow.WorkflowDefinitionView do
       schema_version: workflow_definition.schema_version,
       id: workflow_definition.id,
       identifier: workflow_definition.identifier,
+      is_live: workflow_definition.is_live,
       label: workflow_definition.label,
       icon: workflow_definition.icon,
       version_major: workflow_definition.version_major,
@@ -75,6 +77,7 @@ defmodule StepFlow.WorkflowDefinitionView do
     %{
       id: workflow_definition.id,
       identifier: workflow_definition.identifier,
+      is_live: workflow_definition.is_live,
       label: workflow_definition.label,
       icon: workflow_definition.icon,
       version_major: workflow_definition.version_major,

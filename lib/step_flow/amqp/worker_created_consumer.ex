@@ -44,7 +44,7 @@ defmodule StepFlow.Amqp.WorkerCreatedConsumer do
       _ ->
         job_id = job.id
 
-        case live_worker_update(job_id, direct_messaging_queue_name) do
+        case live_worker_update(job_id) do
           :ok ->
             Basic.ack(channel, tag)
 
@@ -59,7 +59,7 @@ defmodule StepFlow.Amqp.WorkerCreatedConsumer do
     Basic.reject(channel, tag, requeue: false)
   end
 
-  defp live_worker_update(job_id, direct_messaging_queue_name) do
+  defp live_worker_update(job_id) do
     live_worker = LiveWorkers.get_by(%{"job_id" => job_id})
 
     case live_worker do
