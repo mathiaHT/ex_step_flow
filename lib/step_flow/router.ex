@@ -9,6 +9,8 @@ defmodule StepFlow.Router do
     )
   end
 
+  @version Mix.Project.config()[:version]
+
   pipe_through(:api)
 
   get("/", StepFlow.IndexController, :index)
@@ -38,7 +40,10 @@ defmodule StepFlow.Router do
   get("/metrics", StepFlow.MetricController, :index)
 
   scope "/swagger" do
-    forward("/", PhoenixSwagger.Plug.SwaggerUI, otp_app: :step_flow, swagger_file: "swagger.json")
+    forward("/", PhoenixSwagger.Plug.SwaggerUI,
+      otp_app: :step_flow,
+      swagger_file: "step_flow_swagger.json"
+    )
   end
 
   get("/*path", StepFlow.IndexController, :not_found)
@@ -46,7 +51,7 @@ defmodule StepFlow.Router do
   def swagger_info do
     %{
       info: %{
-        version: "0.1.0",
+        version: @version,
         title: "Step Flow"
       }
     }

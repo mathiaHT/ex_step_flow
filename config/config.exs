@@ -13,9 +13,8 @@ config :phoenix_swagger,
 
 config :step_flow, :phoenix_swagger,
   swagger_files: %{
-    "priv/static/swagger.json" => [
+    "priv/static/step_flow_swagger.json" => [
       router: StepFlow.Router
-      # endpoint: StepFlow.Endpoint
     ]
   }
 
