@@ -11,7 +11,7 @@ defmodule StepFlow.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers() ++ [:phoenix_swagger],
       preferred_cli_env: [
         coveralls: :test,
         "coveralls.detail": :test,
@@ -39,7 +39,6 @@ defmodule StepFlow.MixProject do
       mod: {StepFlow.Application, []},
       extra_applications: [
         :amqp,
-        :blue_bird,
         :httpoison,
         :jason,
         :logger,
@@ -58,7 +57,6 @@ defmodule StepFlow.MixProject do
   defp deps do
     [
       {:amqp, "~> 1.6"},
-      {:blue_bird, "~> 0.4.1"},
       {:cowboy, "~> 2.8.0"},
       {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
       {:ecto, "~> 3.5.5"},
@@ -66,6 +64,7 @@ defmodule StepFlow.MixProject do
       {:ecto_enum, "~> 1.4"},
       {:excoveralls, "~> 0.13", only: :test},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:ex_json_schema, "~> 0.5"},
       {:json_xema, "~> 0.6"},
       {:fake_server, "~> 2.1", only: :test},
       {:gettext, "~> 0.18"},
@@ -73,7 +72,12 @@ defmodule StepFlow.MixProject do
       {:jason, "~> 1.1"},
       {:phoenix, "~> 1.5.7"},
       {:phoenix_html, "~> 2.10"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_pubsub, "~> 2.0"},
+      {:phoenix_swagger, "~> 0.8"},
       {:plug, "~> 1.11"},
+      {:plug_cowboy, "~> 2.0", only: :dev},
+      {:poison, "~> 4.0", override: true},
       {:postgrex, "~> 0.15.0"},
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.1"},

@@ -19,12 +19,23 @@ defmodule StepFlow.Application do
     }
 
     children = [
-      # Starts a worker by calling: StepFlow.Worker.start_link(arg)
-      # {StepFlow.Worker, arg}
       supervisor(StepFlow.Repo, []),
       supervisor(StepFlow.Amqp.Supervisor, []),
       worker(StepFlow.Workflows.StepManager, [])
     ]
+
+    children =
+      case Application.get_env(:step_flow, StepFlow.Endpoint) do
+        nil ->
+          children
+
+        _ ->
+          children ++
+            [
+              {Phoenix.PubSub, [name: StepFlow.PubSub, adapter: Phoenix.PubSub.PG2]},
+              supervisor(StepFlow.Endpoint, [])
+            ]
+      end
 
     children =
       StepFlow.Configuration.get_slack_token()
@@ -58,5 +69,12 @@ defmodule StepFlow.Application do
     end
 
     supervisor
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  def config_change(changed, _new, removed) do
+    StepFlow.Endpoint.config_change(changed, removed)
+    :ok
   end
 end
