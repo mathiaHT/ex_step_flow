@@ -26,7 +26,7 @@ defmodule StepFlow.Amqp.WorkerStatusConsumer do
         } = payload
       ) do
     Logger.debug("Got #{docker_container_id} worker status: #{inspect(payload)}")
-    WorkerStatusWatcher.add_worker(docker_container_id, payload)
+    WorkerStatusWatcher.update_worker_status(docker_container_id, payload)
 
     Basic.ack(channel, tag)
   end

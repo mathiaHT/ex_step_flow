@@ -8,6 +8,7 @@ defmodule StepFlow.Amqp.WorkerTerminatedConsumer do
   alias StepFlow.LiveWorkers
   alias StepFlow.Workflows
   alias StepFlow.Workflows.StepManager
+  alias StepFlow.Workers.WorkerStatusWatcher
 
   use StepFlow.Amqp.CommonConsumer, %{
     queue: "worker_terminated",
@@ -28,6 +29,19 @@ defmodule StepFlow.Amqp.WorkerTerminatedConsumer do
         } = _payload
       ) do
     live_worker_update(job_id)
+    Basic.ack(channel, tag)
+  end
+
+  def consume(
+        channel,
+        tag,
+        _redelivered,
+        %{
+          "instance_id" => instance_id
+        } = payload
+      ) do
+    Logger.info("Worker #{instance_id} terminated #{inspect(payload)}")
+    WorkerStatusWatcher.update_worker_status(instance_id, %{activity: "Terminated"})
     Basic.ack(channel, tag)
   end
 

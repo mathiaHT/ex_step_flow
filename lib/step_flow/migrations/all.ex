@@ -103,5 +103,11 @@ defmodule StepFlow.Migration.All do
       20_210_426_230_000,
       StepFlow.Migration.ModifyWorkflowStatus
     )
+
+    Ecto.Migrator.up(
+      StepFlow.Repo,
+      20_210_430_170_000,
+      StepFlow.Migration.CreateWorkerStatus
+    )
   end
 end
