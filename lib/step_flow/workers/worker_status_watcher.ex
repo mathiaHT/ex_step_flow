@@ -7,6 +7,8 @@ defmodule StepFlow.Workers.WorkerStatusWatcher do
   alias StepFlow.Amqp.CommonEmitter
   alias StepFlow.Workers.WorkerStatuses
 
+  @default_workers_status_interval 10_000
+
   def start_link(workers_status \\ %{}) do
     GenServer.start_link(__MODULE__, workers_status, name: __MODULE__)
   end
@@ -89,7 +91,12 @@ defmodule StepFlow.Workers.WorkerStatusWatcher do
       "direct_messaging"
     )
 
-    # TODO: var config
-    Process.send_after(self(), :check, 10 * 1000)
+    interval =
+      Application.get_env(:step_flow, StepFlow.Workers, [
+        workers_status_interval: @default_workers_status_interval
+      ])
+      |> Keyword.get(:workers_status_interval, @default_workers_status_interval)
+
+    Process.send_after(self(), :check, interval)
   end
 end
