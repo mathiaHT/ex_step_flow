@@ -36,6 +36,9 @@ defmodule StepFlow.Router do
     except: [:new, :edit, :delete, :update]
   )
 
+  # Live Workers APIs
+  get("/live_workers", StepFlow.LiveWorkersController, :index)
+
   # Metrics APIs
   get("/metrics", StepFlow.MetricController, :index)
 
