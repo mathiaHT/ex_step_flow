@@ -14,7 +14,6 @@ defmodule StepFlow do
   def controller do
     quote do
       use Phoenix.Controller, namespace: StepFlow
-      use BlueBird.Controller
       import Plug.Conn
       import StepFlow.Gettext
     end
@@ -35,7 +34,6 @@ defmodule StepFlow do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      # import StepFlow.Router.Helpers
       import StepFlow.ErrorHelpers
       import StepFlow.Gettext
     end
@@ -46,7 +44,7 @@ defmodule StepFlow do
   """
   def router do
     quote do
-      use Plug.Router
+      use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
     end
