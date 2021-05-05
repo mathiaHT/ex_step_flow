@@ -39,11 +39,6 @@ defmodule StepFlow.Amqp.CompletedConsumer do
         Basic.reject(channel, tag, requeue: false)
 
       job ->
-        workflow =
-          job
-          |> Map.get(:workflow_id)
-          |> Workflows.get_workflow!()
-
         if job.is_live do
           case live_worker_update(job_id, payload) do
             :ok ->

@@ -1,6 +1,5 @@
 defmodule StepFlow.WorkflowController do
   use StepFlow, :controller
-  use BlueBird.Controller
 
   require Logger
 

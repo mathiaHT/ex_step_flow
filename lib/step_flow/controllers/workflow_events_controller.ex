@@ -19,8 +19,11 @@ defmodule StepFlow.WorkflowEventsController do
 
   action_fallback(StepFlow.FallbackController)
 
-  def handle(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id} = params) do
-    workflow = Workflows.get_workflow!(id)
+  def handle(
+        %Plug.Conn{assigns: %{current_user: user}} = conn,
+        %{"workflow_id" => workflow_id} = params
+      ) do
+    workflow = Workflows.get_workflow!(workflow_id)
 
     case params do
       %{"event" => "abort"} ->

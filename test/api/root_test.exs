@@ -22,7 +22,11 @@ defmodule StepFlow.Api.RootTest do
       |> sent_resp
 
     assert status == 200
-    assert body == "Welcome to Step Flow"
+
+    assert %{
+             "application" => "Step Flow",
+             "version" => _version
+           } = body |> Jason.decode!()
   end
 
   test "GET /unknown" do

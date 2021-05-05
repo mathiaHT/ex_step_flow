@@ -1,6 +1,6 @@
 defmodule StepFlow.WorkflowDefinitionController do
   use StepFlow, :controller
-  use BlueBird.Controller
+  use PhoenixSwagger
 
   import Plug.Conn
 
@@ -10,6 +10,19 @@ defmodule StepFlow.WorkflowDefinitionController do
   require Logger
 
   action_fallback(StepFlow.FallbackController)
+
+  swagger_path :index do
+    get("/definitions")
+    description("List workflow definitions")
+
+    parameters do
+      versions(:query, :array, "List of versions to match", items: [type: :string])
+      mode(:query, :array, "Output mode", items: [type: :string, enum: [:full, :simple]])
+    end
+
+    response(200, "Success")
+    response(403, "Forbidden")
+  end
 
   def index(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
     params =
@@ -35,7 +48,7 @@ defmodule StepFlow.WorkflowDefinitionController do
     )
   end
 
-  def show(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"identifier" => identifier}) do
+  def show(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => identifier}) do
     case WorkflowDefinitions.get_workflow_definition(identifier) do
       nil ->
         conn

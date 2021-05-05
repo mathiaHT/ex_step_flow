@@ -31,3 +31,7 @@ config :step_flow, StepFlow.Amqp,
   virtual_host: ""
 
 config :step_flow, StepFlow.Workflows, time_interval: 1
+
+if File.exists?("config/test.secret.exs") do
+  import_config "test.secret.exs"
+end

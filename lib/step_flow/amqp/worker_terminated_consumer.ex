@@ -5,7 +5,6 @@ defmodule StepFlow.Amqp.WorkerTerminatedConsumer do
 
   require Logger
   alias StepFlow.Amqp.WorkerTerminatedConsumer
-  alias StepFlow.Jobs.Status
   alias StepFlow.LiveWorkers
   alias StepFlow.Workflows
   alias StepFlow.Workflows.StepManager
