@@ -92,9 +92,9 @@ defmodule StepFlow.Workers.WorkerStatusWatcher do
     )
 
     interval =
-      Application.get_env(:step_flow, StepFlow.Workers, [
+      Application.get_env(:step_flow, StepFlow.Workers,
         workers_status_interval: @default_workers_status_interval
-      ])
+      )
       |> Keyword.get(:workers_status_interval, @default_workers_status_interval)
 
     Process.send_after(self(), :check, interval)
