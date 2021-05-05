@@ -10,7 +10,6 @@ defmodule StepFlow.Amqp.WorkerStartedConsumer do
   alias StepFlow.Jobs.Job
   alias StepFlow.Jobs.Status
   alias StepFlow.Repo
-  alias StepFlow.Step.Live
   alias StepFlow.Workflows
   alias StepFlow.Workflows.StepManager
 
