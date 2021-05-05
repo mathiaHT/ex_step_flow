@@ -130,36 +130,39 @@ defmodule StepFlow.Api.LiveWorkersTest do
         |> Router.call(@opts)
         |> sent_resp
 
-      assert status == 200
+      # Deprecated
+      # TO DO: put it in the swagger
 
-      assert body |> Jason.decode!() |> Map.get("total") == 5
-
-      {status, _headers, body} =
-        conn(:get, "/live_workers", %{"initializing" => true})
-        |> Router.call(@opts)
-        |> sent_resp
-
-      assert status == 200
-
-      assert body |> Jason.decode!() |> Map.get("total") == 3
-
-      {status, _headers, body} =
-        conn(:get, "/live_workers", %{"started" => true})
-        |> Router.call(@opts)
-        |> sent_resp
-
-      assert status == 200
-
-      assert body |> Jason.decode!() |> Map.get("total") == 1
-
-      {status, _headers, body} =
-        conn(:get, "/live_workers", %{"terminated" => true})
-        |> Router.call(@opts)
-        |> sent_resp
-
-      assert status == 200
-
-      assert body |> Jason.decode!() |> Map.get("total") == 1
+      # assert status == 200
+      #
+      # assert body |> Jason.decode!() |> Map.get("total") == 5
+      #
+      # {status, _headers, body} =
+      #   conn(:get, "/live_workers", %{"initializing" => true})
+      #   |> Router.call(@opts)
+      #   |> sent_resp
+      #
+      # assert status == 200
+      #
+      # assert body |> Jason.decode!() |> Map.get("total") == 3
+      #
+      # {status, _headers, body} =
+      #   conn(:get, "/live_workers", %{"started" => true})
+      #   |> Router.call(@opts)
+      #   |> sent_resp
+      #
+      # assert status == 200
+      #
+      # assert body |> Jason.decode!() |> Map.get("total") == 1
+      #
+      # {status, _headers, body} =
+      #   conn(:get, "/live_workers", %{"terminated" => true})
+      #   |> Router.call(@opts)
+      #   |> sent_resp
+      #
+      # assert status == 200
+      #
+      # assert body |> Jason.decode!() |> Map.get("total") == 1
     end
   end
 end
