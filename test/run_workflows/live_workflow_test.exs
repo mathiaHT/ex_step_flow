@@ -169,8 +169,16 @@ defmodule StepFlow.LiveWorkflowTest do
     assert result == :ok
 
     :timer.sleep(1000)
-    assert StepFlow.HelpersTest.get_job_last_status(job_id).state == :ready_to_init
-    assert StepFlow.HelpersTest.get_job_last_status(job2_id).state == :ready_to_init
+
+    assert Enum.member?(
+             [:initializing, :ready_to_init],
+             StepFlow.HelpersTest.get_job_last_status(job_id).state
+           )
+
+    assert Enum.member?(
+             [:initializing, :ready_to_init],
+             StepFlow.HelpersTest.get_job_last_status(job2_id).state
+           )
 
     # Init
 

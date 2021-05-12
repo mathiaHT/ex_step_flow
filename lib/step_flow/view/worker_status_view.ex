@@ -1,7 +1,7 @@
 defmodule StepFlow.WorkerStatusView do
   use StepFlow, :view
-  alias StepFlow.WorkerStatusView
   alias StepFlow.Workers.WorkerStatus
+  alias StepFlow.WorkerStatusView
 
   def render("index.json", %{data: workers_status, total: total}) do
     %{

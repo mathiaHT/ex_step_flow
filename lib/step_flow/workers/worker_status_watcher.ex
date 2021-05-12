@@ -83,7 +83,7 @@ defmodule StepFlow.Workers.WorkerStatusWatcher do
     {:noreply, workers_status}
   end
 
-  defp check_workers_status() do
+  defp check_workers_status do
     CommonEmitter.publish(
       "",
       "{ \"type\": \"status\" }",
