@@ -44,7 +44,7 @@ defmodule StepFlow.Workers.WorkerStatusWatcher do
 
   @impl true
   def handle_call(:pop, instance_id, workers_status) do
-    Logger.info(
+    Logger.debug(
       "[#{__MODULE__}] Get worker #{instance_id} status from : #{inspect(workers_status)}"
     )
 
@@ -56,14 +56,14 @@ defmodule StepFlow.Workers.WorkerStatusWatcher do
   def handle_cast({:push, instance_id, worker_status}, workers_status) do
     case WorkerStatuses.get_worker_status(instance_id) do
       nil ->
-        Logger.info(
+        Logger.debug(
           "[#{__MODULE__}] Add #{instance_id} worker to workers status: #{inspect(workers_status)}"
         )
 
         WorkerStatuses.create_worker_status!(worker_status)
 
       status ->
-        Logger.info(
+        Logger.debug(
           "[#{__MODULE__}] Update #{instance_id} worker status: #{inspect(workers_status)}"
         )
 
@@ -72,7 +72,7 @@ defmodule StepFlow.Workers.WorkerStatusWatcher do
 
     workers_status = WorkerStatuses.list_worker_statuses()
 
-    Logger.info(
+    Logger.debug(
       "[#{__MODULE__}] Notify that workers status have been updated: #{inspect(workers_status)}"
     )
 
