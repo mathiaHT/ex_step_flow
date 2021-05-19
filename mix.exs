@@ -56,11 +56,11 @@ defmodule StepFlow.MixProject do
 
   defp deps do
     [
-      {:amqp, "~> 1.6"},
-      {:cowboy, "~> 2.8.0"},
+      {:amqp, "~> 2.1.1"},
+      {:cowboy, "~> 2.9.0"},
       {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
-      {:ecto, "~> 3.5.5"},
-      {:ecto_sql, "~> 3.5.3"},
+      {:ecto, "~> 3.6.1"},
+      {:ecto_sql, "~> 3.6.1"},
       {:ecto_enum, "~> 1.4"},
       {:excoveralls, "~> 0.13", only: :test},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
@@ -70,20 +70,19 @@ defmodule StepFlow.MixProject do
       {:gettext, "~> 0.18"},
       {:httpoison, "~> 1.6"},
       {:jason, "~> 1.1"},
-      {:phoenix, "~> 1.5.7"},
+      {:phoenix, "~> 1.5.9"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_swagger, "~> 0.8"},
       {:plug, "~> 1.11"},
       {:plug_cowboy, "~> 2.0", only: :dev},
-      {:poison, "~> 4.0", override: true},
       {:postgrex, "~> 0.15.0"},
       {:prometheus_ex, "~> 3.0"},
       {:prometheus_plugs, "~> 1.1"},
       {:slack, "~> 0.23.5"},
       {:timex, "~> 3.2"},
-      {:xema, "0.13.6"}
+      {:xema, "0.13.8"}
     ]
   end
 
