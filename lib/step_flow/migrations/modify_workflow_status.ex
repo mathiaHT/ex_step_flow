@@ -7,8 +7,8 @@ defmodule StepFlow.Migration.ModifyWorkflowStatus do
 
     create table(:step_flow_workflow_status) do
       add(:state, :string)
-      add(:status_id, references(:step_flow_status, on_delete: :nothing), null: true)
-      add(:workflow_id, references(:step_flow_workflow, on_delete: :nothing))
+      add(:status_id, references(:step_flow_status, on_delete: :delete_all), null: true)
+      add(:workflow_id, references(:step_flow_workflow, on_delete: :delete_all))
 
       timestamps()
     end
