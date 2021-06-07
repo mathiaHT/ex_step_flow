@@ -10,4 +10,4 @@ services:
 
 include: 
   - project: 'media-cloud-ai/ci/pipelines'
-    file: '/elixir.yml'
+    file: 'elixir/elixir-base.yml'
