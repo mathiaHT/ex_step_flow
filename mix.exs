@@ -6,7 +6,7 @@ defmodule StepFlow.MixProject do
   def project do
     [
       app: :step_flow,
-      version: "1.0.0-rc6",
+      version: "1.0.0-rc7",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -112,7 +112,14 @@ defmodule StepFlow.MixProject do
         "test",
         "format --check-formatted",
         "credo --strict"
-      ]
+      ],
+      version: &get_version/1
     ]
+  end
+
+  defp get_version(_) do
+    project()
+    |> Keyword.fetch!(:version)
+    |> IO.puts()
   end
 end
