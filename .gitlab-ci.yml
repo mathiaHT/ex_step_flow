@@ -15,6 +15,6 @@ stages:
 
 include: 
   - project: 'media-cloud-ai/ci/pipelines'
-    file: 'elixir/elixir-publish-docker.yml'
+    file: 'elixir/elixir-publish-hex.yml'
   - project: 'media-cloud-ai/ci/pipelines'
     file: 'elixir/elixir-base.yml'
