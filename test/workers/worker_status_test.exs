@@ -65,6 +65,44 @@ defmodule StepFlow.Workers.WorkerStatusTest do
     }
   }
 
+  @worker_status_without_instance_id %{
+    job: nil,
+    type: "status",
+    worker: %{
+      activity: "Idle",
+      system_info: %{
+        docker_container_id: "2856099cee46",
+        number_of_processors: 12,
+        total_memory: 33_619_046,
+        total_swap: 2_147_479,
+        used_memory: 5_581_515,
+        used_swap: 0
+      }
+    }
+  }
+
+  @worker_status_without_instance_id_2 %{
+    "job" => %{
+      "destination_paths" => [],
+      "execution_duration" => 4.6e-8,
+      "job_id" => 38,
+      "parameters" => [],
+      "status" => "initialized"
+    },
+    "type" => "status",
+    "worker" => %{
+      "activity" => "Busy",
+      "system_info" => %{
+        "docker_container_id" => "2856099cee46",
+        "number_of_processors" => 12,
+        "total_memory" => 33_619_046,
+        "total_swap" => 2_147_479,
+        "used_memory" => 5_581_515,
+        "used_swap" => 0
+      }
+    }
+  }
+
   test "process worker status message without job" do
     result = WorkerStatuses.process_worker_status_message(@worker_status_without_job)
 
@@ -113,6 +151,48 @@ defmodule StepFlow.Workers.WorkerStatusTest do
                "used_swap" => 0
              },
              "version" => "1.2.3"
+           }
+  end
+
+  test "process worker status message without instance_id" do
+    result = WorkerStatuses.process_worker_status_message(@worker_status_without_instance_id)
+
+    assert result == %{
+             activity: "Idle",
+             current_job: nil,
+             instance_id: "2856099cee46",
+             system_info: %{
+               docker_container_id: "2856099cee46",
+               number_of_processors: 12,
+               total_memory: 33_619_046,
+               total_swap: 2_147_479,
+               used_memory: 5_581_515,
+               used_swap: 0
+             }
+           }
+  end
+
+  test "process worker status message without instance_id 2" do
+    result = WorkerStatuses.process_worker_status_message(@worker_status_without_instance_id_2)
+
+    assert result == %{
+             "activity" => "Busy",
+             "current_job" => %{
+               "job_id" => 38,
+               "status" => "initialized",
+               "destination_paths" => [],
+               "execution_duration" => 4.6e-8,
+               "parameters" => []
+             },
+             "instance_id" => "2856099cee46",
+             "system_info" => %{
+               "docker_container_id" => "2856099cee46",
+               "number_of_processors" => 12,
+               "total_memory" => 33_619_046,
+               "total_swap" => 2_147_479,
+               "used_memory" => 5_581_515,
+               "used_swap" => 0
+             }
            }
   end
 
@@ -195,6 +275,51 @@ defmodule StepFlow.Workers.WorkerStatusTest do
 
     assert updated_worker_status.current_job.job_id == 1234
     assert updated_worker_status.current_job.status == :running
+
+    worker_statuses =
+      WorkerStatuses.list_worker_statuses()
+      |> Map.get(:data)
+
+    assert Enum.count(worker_statuses) == 1
+    assert List.first(worker_statuses) == worker_status
+  end
+
+  test "create and get worker status structure without instance_id" do
+    worker_status = WorkerStatuses.create_worker_status!(@worker_status_without_instance_id)
+
+    assert worker_status.instance_id == "2856099cee46"
+
+    update = %{
+      job: %{
+        destination_paths: [],
+        execution_duration: 4.6e-8,
+        job_id: 38,
+        parameters: [],
+        status: "initialized"
+      },
+      type: "status",
+      worker: %{
+        activity: "Busy",
+        system_info: %{
+          docker_container_id: "2856099cee46",
+          number_of_processors: 12,
+          total_memory: 33_619_046,
+          total_swap: 2_147_479,
+          used_memory: 5_581_515,
+          used_swap: 0
+        }
+      }
+    }
+
+    updated_worker_status = WorkerStatuses.update_worker_status!(worker_status, update)
+
+    worker_status = WorkerStatuses.get_worker_status(worker_status.instance_id)
+
+    assert worker_status.id == updated_worker_status.id
+    assert worker_status.instance_id == updated_worker_status.instance_id
+
+    assert updated_worker_status.current_job.job_id == 38
+    assert updated_worker_status.current_job.status == :initialized
 
     worker_statuses =
       WorkerStatuses.list_worker_statuses()

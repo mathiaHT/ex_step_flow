@@ -17,10 +17,10 @@ defmodule StepFlow.Workers.WorkerStatus do
   schema "step_flow_worker_status" do
     field(:activity, ActivityEnum, default: "Idle")
     field(:description, :string, default: "")
-    field(:direct_messaging_queue_name, :string)
+    field(:direct_messaging_queue_name, :string, default: "")
     field(:instance_id, :string)
-    field(:label, :string)
-    field(:queue_name, :string)
+    field(:label, :string, default: "")
+    field(:queue_name, :string, default: "")
     field(:sdk_version, :string, default: "")
     field(:short_description, :string, default: "")
     field(:system_info, :map, default: %{})
@@ -51,10 +51,7 @@ defmodule StepFlow.Workers.WorkerStatus do
     ])
     |> cast_embed(:current_job, with: &job_status_changeset/2)
     |> validate_required([
-      :instance_id,
-      :label,
-      :queue_name,
-      :direct_messaging_queue_name
+      :instance_id
     ])
     |> unique_constraint(:instance_id)
   end

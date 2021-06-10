@@ -55,13 +55,27 @@ defmodule StepFlow.Workers.WorkerStatuses do
   end
 
   @doc false
+  defp get_instance_id_from_system_info(worker_status) do
+    StepFlow.Map.get_by_key_or_atom(worker_status, :system_info)
+    |> StepFlow.Map.get_by_key_or_atom(:docker_container_id)
+  end
+
+  @doc false
   def process_worker_status_message(%{:job => job_status, :worker => worker_status}) do
+    worker_status =
+      worker_status
+      |> Map.put_new(:instance_id, get_instance_id_from_system_info(worker_status))
+
     worker_status
     |> Map.put(:current_job, job_status)
   end
 
   @doc false
   def process_worker_status_message(%{"job" => job_status, "worker" => worker_status}) do
+    worker_status =
+      worker_status
+      |> Map.put_new("instance_id", get_instance_id_from_system_info(worker_status))
+
     worker_status
     |> Map.put("current_job", job_status)
   end
