@@ -487,8 +487,9 @@ defmodule StepFlow.Workflows do
       send(
         :step_flow_slack_bot,
         {:message,
-         "Error for job #{job.name} ##{job_id} <#{exposed_domain_name}/workflows/#{job.workflow_id} |Open Workflow>\n```#{description}```",
-         channel}
+         "Error for job #{job.name} ##{job_id} <#{exposed_domain_name}/workflows/#{
+           job.workflow_id
+         } |Open Workflow>\n```#{description}```", channel}
       )
     end
 
