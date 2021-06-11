@@ -3,10 +3,14 @@ defmodule StepFlow.Amqp.WorkerCreatedConsumer do
   Consumer of all worker creations.
   """
 
+  import Ecto.Query, warn: false
+
   require Logger
   alias StepFlow.Amqp.WorkerCreatedConsumer
+  alias StepFlow.Jobs.Job
   alias StepFlow.Jobs.Status
   alias StepFlow.LiveWorkers
+  alias StepFlow.Repo
   alias StepFlow.Workflows
   alias StepFlow.Workflows.StepManager
 
@@ -72,6 +76,14 @@ defmodule StepFlow.Amqp.WorkerCreatedConsumer do
         })
 
         Status.set_job_status(job_id, "ready_to_init")
+        query = from(job in Job, select: job.id)
+        stream = Repo.stream(query)
+
+        Repo.transaction(fn ->
+          Enum.to_list(stream)
+        end)
+
+        :timer.sleep(5000)
         Workflows.notification_from_job(job_id)
         StepManager.check_step_status(%{job_id: job_id})
         :ok

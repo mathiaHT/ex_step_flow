@@ -172,9 +172,7 @@ defmodule StepFlow.WorkflowDefinitions.WorkflowDefinition do
           |> JsonXema.ValidationError.travers_errors([], fun)
 
         Logger.error(
-          "Workflow definition #{inspect(Map.get(workflow_definition, "identifier"))} not valid: #{
-            inspect(errors)
-          }"
+          "Workflow definition #{inspect(Map.get(workflow_definition, "identifier"))} not valid: #{inspect(errors)}"
         )
 
         false

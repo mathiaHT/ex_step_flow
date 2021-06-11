@@ -2,6 +2,7 @@ defmodule StepFlow.Step.Live do
   @moduledoc """
   The Live step context.
   """
+
   alias StepFlow.Amqp.CommonEmitter
   alias StepFlow.Jobs
   alias StepFlow.Jobs.Status
@@ -53,7 +54,7 @@ defmodule StepFlow.Step.Live do
     job = Repo.preload(Jobs.get_job(job.id), [:status])
 
     if job.status != [] do
-      case Status.get_last_status(job.status).state do
+      case Status.get_last_status_id(job.status).state do
         :ready_to_init -> update_live_worker(steps, job, "initializing")
         :ready_to_start -> update_live_worker(steps, job, "starting")
         :update -> update_live_worker(steps, job, "updating")

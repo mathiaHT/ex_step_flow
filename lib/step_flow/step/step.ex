@@ -137,9 +137,7 @@ defmodule StepFlow.Step do
       source_paths = Launch.get_source_paths(workflow, step, dates)
 
       Logger.warn(
-        "#{__MODULE__}: start to process step #{step_name} (index #{step_id}) for workflow #{
-          workflow.id
-        }"
+        "#{__MODULE__}: start to process step #{step_name} (index #{step_id}) for workflow #{workflow.id}"
       )
 
       {result, status} =
@@ -166,9 +164,7 @@ defmodule StepFlow.Step do
 
               _ ->
                 Logger.error(
-                  "#{__MODULE__}: cannot estimate condition for step #{step_name} (index #{
-                    step_id
-                  }) for workflow #{workflow.id}"
+                  "#{__MODULE__}: cannot estimate condition for step #{step_name} (index #{step_id}) for workflow #{workflow.id}"
                 )
 
                 {:error, "bad step condition"}
