@@ -83,7 +83,7 @@ defmodule StepFlow.Amqp.WorkerCreatedConsumer do
           Enum.to_list(stream)
         end)
 
-        :timer.sleep(5000)
+        :timer.sleep(1000)
         Workflows.notification_from_job(job_id)
         StepManager.check_step_status(%{job_id: job_id})
         :ok

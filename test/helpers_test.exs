@@ -342,6 +342,11 @@ defmodule StepFlow.HelpersTest do
     |> Status.get_last_status()
   end
 
+  def get_job_last_status_id(job_id) do
+    Repo.preload(Jobs.get_job(job_id), [:status]).status
+    |> Status.get_last_status_id()
+  end
+
   def get_parameter_value_list(workflow, step_id) do
     StepFlow.Jobs.list_jobs(%{
       "step_id" => step_id,

@@ -168,16 +168,16 @@ defmodule StepFlow.LiveWorkflowTest do
 
     assert result == :ok
 
-    :timer.sleep(1000)
+    :timer.sleep(6000)
 
     assert Enum.member?(
              [:initializing, :ready_to_init],
-             StepFlow.HelpersTest.get_job_last_status(job_id).state
+             StepFlow.HelpersTest.get_job_last_status_id(job_id).state
            )
 
     assert Enum.member?(
              [:initializing, :ready_to_init],
-             StepFlow.HelpersTest.get_job_last_status(job2_id).state
+             StepFlow.HelpersTest.get_job_last_status_id(job2_id).state
            )
 
     # Init
@@ -196,7 +196,7 @@ defmodule StepFlow.LiveWorkflowTest do
 
     :timer.sleep(6000)
     # Too early to have consumed
-    assert StepFlow.HelpersTest.get_job_last_status(job_id).state == :ready_to_start
+    assert StepFlow.HelpersTest.get_job_last_status_id(job_id).state == :ready_to_start
 
     result =
       CommonEmitter.publish_json(
@@ -211,7 +211,7 @@ defmodule StepFlow.LiveWorkflowTest do
     assert result == :ok
 
     :timer.sleep(6000)
-    assert StepFlow.HelpersTest.get_job_last_status(job2_id).state == :starting
+    assert StepFlow.HelpersTest.get_job_last_status_id(job2_id).state == :starting
 
     # Start
 
@@ -228,7 +228,7 @@ defmodule StepFlow.LiveWorkflowTest do
     assert result == :ok
 
     :timer.sleep(6000)
-    assert StepFlow.HelpersTest.get_job_last_status(job_id).state == :processing
+    assert StepFlow.HelpersTest.get_job_last_status_id(job_id).state == :processing
 
     result =
       CommonEmitter.publish_json(
@@ -243,7 +243,7 @@ defmodule StepFlow.LiveWorkflowTest do
     assert result == :ok
 
     :timer.sleep(6000)
-    assert StepFlow.HelpersTest.get_job_last_status(job2_id).state == :processing
+    assert StepFlow.HelpersTest.get_job_last_status_id(job2_id).state == :processing
 
     # Delete
 
