@@ -3,7 +3,7 @@ defmodule StepFlow.Amqp.WorkerStatusConsumerTest do
   use Plug.Test
 
   alias Ecto.Adapters.SQL.Sandbox
-  alias StepFlow.Amqp.CommonEmitter
+  alias StepFlow.Amqp.Connection
   alias StepFlow.Jobs
   alias StepFlow.Workflows
 
@@ -12,6 +12,8 @@ defmodule StepFlow.Amqp.WorkerStatusConsumerTest do
   setup do
     # Explicitly get a connection before each test
     :ok = Sandbox.checkout(StepFlow.Repo)
+    # Setting the shared mode
+    Sandbox.mode(StepFlow.Repo, {:shared, self()})
     {conn, _channel} = StepFlow.HelpersTest.get_amqp_connection()
 
     on_exit(fn ->
@@ -45,13 +47,27 @@ defmodule StepFlow.Amqp.WorkerStatusConsumerTest do
         workflow_id: workflow.id
       })
 
+    message = %{
+      job: %{
+        job_id: job.id,
+        status: "processing"
+      },
+      worker: %{
+        system_info: %{
+          docker_container_id: "1234"
+        }
+      }
+    }
+
+    message = message |> Jason.encode!()
+
+    options = [priority: 0]
+
     result =
-      CommonEmitter.publish_json(
+      Connection.publish(
         "worker_status",
-        0,
-        %{
-          job_id: job.id
-        },
+        message,
+        options,
         "worker_response"
       )
 

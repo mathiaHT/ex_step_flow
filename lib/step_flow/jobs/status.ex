@@ -110,6 +110,20 @@ defmodule StepFlow.Jobs.Status do
   def get_last_status(_status), do: nil
 
   @doc """
+  Returns the last status id of a list of status.
+  """
+  def get_last_status_id(status) when is_list(status) do
+    status
+    |> Enum.sort(fn state_1, state_2 ->
+      state_1.id < state_2.id
+    end)
+    |> List.last()
+  end
+
+  def get_last_status_id(%Status{} = status), do: status
+  def get_last_status_id(_status), do: nil
+
+  @doc """
   Returns action linked to status
   """
   def get_action(status) do
