@@ -11,6 +11,7 @@ defmodule StepFlow.Workers.WorkerStatus do
   defenum(ActivityEnum, [
     "Idle",
     "Busy",
+    "Suspended",
     "Terminated"
   ])
 

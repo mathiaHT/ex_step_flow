@@ -39,6 +39,9 @@ defmodule StepFlow.Router do
   # Live Workers APIs
   get("/live_workers", StepFlow.LiveWorkersController, :index)
 
+  # Workers APIs
+  resources("/workers", StepFlow.WorkersController, only: [:index, :show, :update])
+
   # Metrics APIs
   get("/metrics", StepFlow.MetricController, :index)
 
