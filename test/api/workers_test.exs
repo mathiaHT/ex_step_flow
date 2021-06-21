@@ -3,8 +3,8 @@ defmodule StepFlow.WorkersTest do
   use Plug.Test
 
   alias Ecto.Adapters.SQL.Sandbox
-  alias StepFlow.Workers.WorkerStatuses
   alias StepFlow.Router
+  alias StepFlow.Workers.WorkerStatuses
 
   doctest StepFlow
 
