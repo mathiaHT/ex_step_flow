@@ -93,6 +93,7 @@ defmodule StepFlow.WorkersTest do
 
     processed_worker_status_with_job_but_no_instance_id = %{
       "current_job" => %{
+        "execution_duration" => 4.6e-8,
         "job_id" => 38,
         "status" => "initialized"
       },

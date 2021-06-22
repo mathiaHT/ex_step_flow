@@ -275,6 +275,7 @@ defmodule StepFlow.Workers.WorkerStatusTest do
 
     assert updated_worker_status.current_job.job_id == 1234
     assert updated_worker_status.current_job.status == :running
+    assert updated_worker_status.current_job.execution_duration == 0.000001091
 
     worker_statuses =
       WorkerStatuses.list_worker_statuses()
