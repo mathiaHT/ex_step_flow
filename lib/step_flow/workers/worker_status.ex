@@ -11,6 +11,7 @@ defmodule StepFlow.Workers.WorkerStatus do
   defenum(ActivityEnum, [
     "Idle",
     "Busy",
+    "Suspended",
     "Terminated"
   ])
 
@@ -27,6 +28,7 @@ defmodule StepFlow.Workers.WorkerStatus do
     field(:version, :string, default: "")
 
     embeds_one :current_job, JobStatus, on_replace: :delete do
+      field(:execution_duration, :float)
       field(:job_id, :integer)
       field(:status, Status.StateEnum)
     end
@@ -59,6 +61,7 @@ defmodule StepFlow.Workers.WorkerStatus do
   defp job_status_changeset(schema, params) do
     schema
     |> cast(params, [
+      :execution_duration,
       :job_id,
       :status
     ])

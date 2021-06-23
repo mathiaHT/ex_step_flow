@@ -19,6 +19,7 @@ defmodule StepFlow.WorkerStatusView do
 
         job_status ->
           %{
+            execution_duration: job_status.execution_duration,
             job_id: job_status.job_id,
             status: job_status.status
           }
