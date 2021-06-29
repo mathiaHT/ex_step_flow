@@ -28,7 +28,7 @@ defmodule StepFlow.WorkflowDefinitionController do
     params =
       params
       |> Map.put("rights", StepFlow.Map.get_by_key_or_atom(user, :rights, []))
-      |> Map.put("right_action", StepFlow.Map.get_by_key_or_atom(params, :right_action, "action"))
+      |> Map.put("right_action", StepFlow.Map.get_by_key_or_atom(params, :right_action, "view"))
       |> Map.put("versions", StepFlow.Map.get_by_key_or_atom(params, :versions, []))
       |> Map.put("mode", StepFlow.Map.get_by_key_or_atom(params, :mode, "full"))
 
