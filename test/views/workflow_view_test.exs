@@ -34,7 +34,7 @@ defmodule StepFlow.WorkflowViewTest do
     {:ok, %{rights: [right]} = workflow} = StepFlow.Workflows.create_workflow(@workflow)
     workflow = StepFlow.Repo.preload(workflow, [:artifacts, :jobs, :rights])
 
-    assert render(StepFlow.WorkflowView, "show.json", %{workflow: workflow}) == %{
+    assert render(StepFlow.WorkflowView, "show.json", %{workflow: workflow, mode: "full"}) == %{
              data: %{
                schema_version: "1.8",
                id: workflow.id,

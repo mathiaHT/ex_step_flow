@@ -125,15 +125,17 @@ defmodule StepFlow.WorkflowController do
     merge_parameters(tail, request_parameters, result)
   end
 
-  def show(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
+  def show(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id} = params) do
+    mode = StepFlow.Map.get_by_key_or_atom(params, :mode, "full")
+
     workflow =
       Workflows.get_workflow!(id)
-      |> Repo.preload(:jobs)
+      |> Repo.preload([:jobs, :status])
 
     if Helpers.has_right(workflow, user, "view") do
       conn
       |> put_view(StepFlow.WorkflowView)
-      |> render("show.json", workflow: workflow)
+      |> render("show.json", workflow: workflow, mode: mode)
     else
       conn
       |> put_status(:forbidden)

@@ -1,24 +1,24 @@
 defmodule StepFlow.WorkflowView do
   use StepFlow, :view
-  alias StepFlow.{ArtifactView, JobView, RightView, WorkflowView}
+  alias StepFlow.{ArtifactView, JobView, RightView, WorkflowStatusView, WorkflowView}
   require Logger
 
   def render("index.json", %{workflows: %{data: workflows, total: total}}) do
     %{
-      data: render_many(workflows, WorkflowView, "workflow.json"),
+      data: render_many(workflows, WorkflowView, "workflow_full.json"),
       total: total
     }
   end
 
-  def render("show.json", %{workflow: workflow}) do
-    %{data: render_one(workflow, WorkflowView, "workflow.json")}
+  def render("show.json", %{workflow: workflow, mode: mode}) do
+    %{data: render_one(workflow, WorkflowView, "workflow_#{mode}.json")}
   end
 
   def render("created.json", %{workflow: workflow}) do
     %{data: render_one(workflow, WorkflowView, "workflow_created.json")}
   end
 
-  def render("workflow.json", %{workflow: workflow}) do
+  def render("workflow_full.json", %{workflow: workflow}) do
     result = %{
       schema_version: workflow.schema_version,
       id: workflow.id,
@@ -53,6 +53,31 @@ defmodule StepFlow.WorkflowView do
     if is_list(workflow.rights) do
       rights = render_many(workflow.rights, RightView, "right.json")
       Map.put(result, :rights, rights)
+    else
+      result
+    end
+  end
+
+  def render("workflow_simple.json", %{workflow: workflow}) do
+    result = %{
+      schema_version: workflow.schema_version,
+      id: workflow.id,
+      identifier: workflow.identifier,
+      is_live: workflow.is_live,
+      version_major: workflow.version_major,
+      version_minor: workflow.version_minor,
+      version_micro: workflow.version_micro,
+      created_at: workflow.inserted_at
+    }
+
+    if is_list(workflow.status) do
+      last_status =
+        workflow.status
+        |> Enum.sort_by(fn s -> {s.inserted_at, s.id} end)
+        |> List.last()
+
+      state = render_one(last_status, WorkflowStatusView, "state.json")
+      Map.put(result, :status, state)
     else
       result
     end

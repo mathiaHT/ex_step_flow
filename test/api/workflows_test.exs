@@ -141,6 +141,42 @@ defmodule StepFlow.Api.WorkflowsTest do
       assert body |> Jason.decode!() == %{"data" => [], "total" => 0}
     end
 
+    test "GET /workflows/:id with authorized user" do
+      workflow =
+        workflow_fixture(%{
+          schema_version: "1.8",
+          identifier: "9A9F48E4-5585-4E8E-9199-CEFECF85CE14",
+          reference: "9A9F48E4-5585-4E8E-9199-CEFECF85CE14",
+          version_major: 1,
+          version_minor: 2,
+          version_micro: 3,
+          rights: [
+            %{
+              action: "view",
+              groups: ["user_view"]
+            }
+          ]
+        })
+
+      {:ok, _} = Workflows.Status.set_workflow_status(workflow.id, :completed)
+
+      {status, _headers, body} =
+        conn(:get, "/workflows/#{workflow.id}", %{
+          mode: "simple"
+        })
+        |> assign(:current_user, %{rights: ["user_view"]})
+        |> Router.call(@opts)
+        |> sent_resp
+
+      assert status == 200
+
+      assert body
+             |> Jason.decode!()
+             |> Map.get("data")
+             |> Map.get("status")
+             |> Map.get("state") == "completed"
+    end
+
     @tag capture_log: true
     test "POST /workflows valid with authorized user" do
       {status, _headers, body} =
